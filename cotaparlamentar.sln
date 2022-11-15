@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33103.184
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cotaparlamentar.api", "cotaparlamentar.api\cotaparlamentar.api.csproj", "{066B3AC9-726A-4372-9DB3-59398D957E6C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{066B3AC9-726A-4372-9DB3-59398D957E6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066B3AC9-726A-4372-9DB3-59398D957E6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066B3AC9-726A-4372-9DB3-59398D957E6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066B3AC9-726A-4372-9DB3-59398D957E6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B4725A3E-33CF-46BA-8313-93AA99C3E0A7}
+	EndGlobalSection
+EndGlobal
