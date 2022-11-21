@@ -134,16 +134,16 @@ public class AssessorParlamentarService
 
                 if (tabRemuneracao != null)
                 {
-                    var remuneracaoFixa = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Remuneração Fixa']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var vangatens = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Vantagens de Natureza Pessoal']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var remuneracao = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Função ou Cargo em Comissão']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var gratifica = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Gratificação Natalina']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var ferias = tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Férias (1/3 Constitucional)']/td[2]") != null ? Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Férias (1/3 Constitucional)']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR")) : 0;
-                    var outros = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='d - Outras Remunerações Eventuais/Provisórias(*)']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var remuneracaoFixa = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Remuneração Fixa']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var vangatens = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Vantagens de Natureza Pessoal']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var remuneracao = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Função ou Cargo em Comissão']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var gratifica = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Gratificação Natalina']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var ferias = tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Férias (1/3 Constitucional)']/td[2]") != null ? Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Férias (1/3 Constitucional)']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR")) : 0;
+                    var outros = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='d - Outras Remunerações Eventuais/Provisórias(*)']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
 
-                    var auxilio = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Auxílios']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var diaria = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Diárias']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
-                    var ideniza = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Vantagens Indenizatórias']/td[2]").InnerText, System.Globalization.CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var auxilio = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='b - Auxílios']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var diaria = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='a - Diárias']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
+                    var ideniza = Convert.ToDecimal(tabRemuneracao.FirstOrDefault().SelectSingleNode("//tr[td='c - Vantagens Indenizatórias']/td[2]").InnerText, CultureInfo.CreateSpecificCulture("pt-BR"));
 
                     assessor.Remuneracao = remuneracao + remuneracaoFixa + vangatens + gratifica + ferias + outros;
                     assessor.Auxilio = auxilio + diaria + ideniza;
@@ -154,12 +154,12 @@ public class AssessorParlamentarService
     private string LogReturn(IEnumerable<dynamic> list)
     {
         var builder = new StringBuilder();
-        builder.AppendLine("[ATUALIZACAO ASSESSOR]");
+        builder.AppendLine($"[ATUALIZACAO ASSESSOR] Total: {list.Count()}");
         foreach (var item in list)
         {
             builder.AppendLine($"{item.NuDeputadoId} - {item.IdPerfil} : {item.Nome}");
         }
-        builder.AppendLine("[ATUALIZACAO ASSESSOR]");
+        builder.AppendLine($"[ATUALIZACAO ASSESSOR] Total: {list.Count()}");
         return builder.ToString();
     }
 }

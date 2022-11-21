@@ -15,13 +15,13 @@ public class CotaParlamentarController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{data}")]
-    public IActionResult Get(string data)
+    public IActionResult Get(string? data)
     {
         try
         {
+            var dataP = data ?? DateTime.Now.AddMonths(-1).ToString("MM/yyyy");
             var watch = Stopwatch.StartNew();
-            var result = _cotaParlamentarService.BuscarCotaParlamentarPorData(data);
+            var result = _cotaParlamentarService.BuscarCotaParlamentarPorData(dataP);
             watch.Stop();
             return Ok($"{result} Tempo: {watch.ElapsedMilliseconds / 1000}s");
         }
@@ -32,13 +32,14 @@ public class CotaParlamentarController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{data}/{nuDeputadoId:int}")]
-    public IActionResult GetDeputado(string data, int nuDeputadoId)
+    [Route("{nuDeputadoId:int}")]
+    public IActionResult GetDeputado(string? data, int nuDeputadoId)
     {
         try
         {
+            var dataP = data ?? DateTime.Now.AddMonths(-1).ToString("MM/yyyy");
             var watch = Stopwatch.StartNew();
-            var result = _cotaParlamentarService.BuscarCotaParlamentarPorDataId(data, nuDeputadoId);
+            var result = _cotaParlamentarService.BuscarCotaParlamentarPorDataId(dataP, nuDeputadoId);
             watch.Stop();
             return Ok($"{result} Tempo: {watch.ElapsedMilliseconds / 1000}s");
         }
