@@ -45,7 +45,7 @@ public class AssessorParlamentarService
             var queryUpdate = string.Format("UPDATE tbdeputados SET dtAtAssessor = NOW() WHERE nuDeputadoId IN ({0})", string.Join(",", listNuDeputadoId));
             _mysqlContext.Database.ExecuteSqlRaw(queryUpdate);
             _mysqlContext.SaveChanges();
-        }        
+        }
 
         return LogReturn(contextDeputados);
     }
@@ -57,25 +57,21 @@ public class AssessorParlamentarService
 
         if (idperfil == 0) return "Deputado não encontrado";
 
-        var assessor = BuscarAssessorParlamentar(nuDeputadoId,idperfil);
+        var assessor = BuscarAssessorParlamentar(nuDeputadoId, idperfil).Distinct().ToList();
 
-        if (assessor.Count > 0)
-        {
-            var queryDelete = string.Format("DELETE FROM tbassessor WHERE nuDeputadoId = {0}", nuDeputadoId);
-            _mysqlContext.Database.ExecuteSqlRaw(queryDelete);
-            _mysqlContext.SaveChanges();
+        var queryDelete = string.Format("DELETE FROM tbassessor WHERE nuDeputadoId = {0}", nuDeputadoId);
+        _mysqlContext.Database.ExecuteSqlRaw(queryDelete);
+        _mysqlContext.SaveChanges();
 
-            _mysqlContext.Assessor.AddRange(assessor);
-            _mysqlContext.SaveChanges();
+        _mysqlContext.Assessor.AddRange(assessor);
+        _mysqlContext.SaveChanges();
 
-            var queryUpdate = string.Format("UPDATE tbdeputados SET dtAtAssessor = NOW() WHERE nuDeputadoId = {0}", nuDeputadoId);
-            _mysqlContext.Database.ExecuteSqlRaw(queryUpdate);
-            _mysqlContext.SaveChanges();
+        var queryUpdate = string.Format("UPDATE tbdeputados SET dtAtAssessor = NOW() WHERE nuDeputadoId = {0}", nuDeputadoId);
+        _mysqlContext.Database.ExecuteSqlRaw(queryUpdate);
+        _mysqlContext.SaveChanges();
 
-            return $"Asessor deputado {nuDeputadoId} Atualizado: {assessor.Count} assessores";
-        }
+        return $"Asessor deputado {nuDeputadoId} Atualizado: {assessor.Count} assessores";
 
-        return "Não retornou resultado";
     }
     private List<Assessor> BuscarAssessorParlamentar(int nuDeputadoId, int idperfil)
     {
@@ -84,6 +80,8 @@ public class AssessorParlamentarService
         var web = new HtmlWeb();
         var url = string.Format("https://www.camara.leg.br/deputados/{0}/pessoal-gabinete?ano={1}", idperfil, DateTime.Now.Year.ToString());
         var doc = web.Load(url);
+
+        if (!EmExercicio(doc)) return listAssessor;
 
         HtmlNodeCollection assessores = doc.DocumentNode.SelectNodes("//*[@id='main-content']/section/div[1]/table[1]");
         if (assessores != null)
@@ -97,7 +95,7 @@ public class AssessorParlamentarService
                 {
                     var assessor = new Assessor();
                     var data = DateTime.Now;
-                    DateTime.TryParse(td[3].InnerText.Substring(6), CultureInfo.CreateSpecificCulture("pt-BR"), DateTimeStyles.AdjustToUniversal, out data);
+                    //DateTime.TryParse(td[3].InnerText.Substring(6), CultureInfo.CreateSpecificCulture("pt-BR"), DateTimeStyles.AdjustToUniversal, out data);
                     assessor.Nome = td[0].InnerText;
                     assessor.Cargo = td[1].InnerText;
                     assessor.PeriodoExercicio = data;
@@ -161,5 +159,17 @@ public class AssessorParlamentarService
         }
         builder.AppendLine($"[ATUALIZACAO ASSESSOR] Total: {list.Count()}");
         return builder.ToString();
+    }
+
+    private bool EmExercicio(HtmlDocument doc)
+    {
+        try
+        {
+            return (bool)(doc.DocumentNode?.SelectNodes("//span[@class='titulo-secao__texto']").FirstOrDefault()?.InnerText.Equals("Em exercício", StringComparison.CurrentCultureIgnoreCase));
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

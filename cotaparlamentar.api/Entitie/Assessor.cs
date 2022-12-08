@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace cotaparlamentar.api.Entitie;
 
 [Table("tbassessor")]
-public class Assessor
+public class Assessor : IEquatable<Assessor>
 {
     [Key]
     public int Id { get; set; }
@@ -16,4 +16,14 @@ public class Assessor
     public decimal Auxilio { get; set; }
     public string? LinkRemuneracao { get; set; }
     public DateTime DtCadastro { get; set; } = DateTime.Now;
+
+    public bool Equals(Assessor other)
+    {
+        return this.Nome == other.Nome;
+    }
+
+    public override int GetHashCode()
+    {
+        return this.Nome.GetHashCode();
+    }
 }
