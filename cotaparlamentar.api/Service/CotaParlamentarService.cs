@@ -75,7 +75,7 @@ public class CotaParlamentarService
                 {
                     NuDeputadoId = nuDeputadoId,
                     Data = FormatData(data),
-                    Despesa = Convert.ToDecimal(tabelaCota[j].SelectSingleNode("//tbody//tr//td[@id='" + idTd + "']").InnerText.Trim().Substring(3), CultureInfo.CreateSpecificCulture("pt-BR"),
+                    Despesa = Convert.ToDecimal(tabelaCota[j].SelectSingleNode("//tbody//tr//td[@id='" + idTd + "']").InnerText.Trim().Substring(3), CultureInfo.CreateSpecificCulture("pt-BR")),
                     TipoDespesa = tabelaCota[j].SelectSingleNode("//tbody//a[@id='linkSumarizado" + j + "']").InnerText.Trim(),
                     LinkDespesa = Regex.Replace(HttpUtility.HtmlDecode("https://" + new Uri(url).Host.ToString() + tabelaCota[j].SelectSingleNode("//tbody//a[@id='linkSumarizado" + j + "']").Attributes["href"].Value.Trim()), @"\s+", ""),
                     LinkDespesaSumarizado = url
