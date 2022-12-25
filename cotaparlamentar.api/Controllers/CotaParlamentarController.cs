@@ -1,9 +1,10 @@
-﻿using cotaparlamentar.api.Service;
+﻿using cotaparlamentar.api.Authorization;
+using cotaparlamentar.api.Service;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace cotaparlamentar.api.Controllers;
-
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class CotaParlamentarController : ControllerBase

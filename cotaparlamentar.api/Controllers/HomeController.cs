@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using cotaparlamentar.api.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cotaparlamentar.api.Controllers
@@ -12,6 +13,17 @@ namespace cotaparlamentar.api.Controllers
         public void GetIndex()
         {
             Response.Redirect("swagger/");
+        }
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpPost]
+        public IActionResult GetToken([FromServices] TokenService service, string pass)
+        {
+            if (!(pass == "moovo"))
+                return BadRequest();
+
+
+            return Ok(service.GenerateToken());
         }
     }
 }
