@@ -32,15 +32,49 @@ public class DeputadoController : ControllerBase
     }
 
     [HttpGet]
-    [Route("{idperfil:int}")]
-    public IActionResult AtualizacaoDeputadosGet(int idperfil)
+    [Route("{nuDeputadoId:int}")]
+    public IActionResult AtualizacaoDeputadosGet(int nuDeputadoId)
     {
         try
         {
             var watch = Stopwatch.StartNew();
-            var result = _deputadoService.BuscaTodosDeputadosSiteCompletoPorIdPerfil(idperfil);
+            var result = _deputadoService.BuscaTodosDeputadosSiteCompletoPorIdPerfil(nuDeputadoId);
             watch.Stop();
             return Ok($"{result} Tempo: {watch.ElapsedMilliseconds / 1000}s");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("foto/{nuDeputadoId:int}")]
+    public async Task<IActionResult> AtualizacaoFotoDeputado(int nuDeputadoId)
+    {
+        try
+        {
+            var watch = Stopwatch.StartNew();
+            await _deputadoService.AtualizacaoDeFoto(nuDeputadoId);
+            watch.Stop();
+            return Ok($"Tempo: {watch.ElapsedMilliseconds / 1000}s");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("foto")]
+    public async Task<IActionResult> AtualizacaoFotoDeputado()
+    {
+        try
+        {
+            var watch = Stopwatch.StartNew();
+            await _deputadoService.AtualizacaoDeFoto();
+            watch.Stop();
+            return Ok($"Tempo: {watch.ElapsedMilliseconds / 1000}s");
         }
         catch (Exception ex)
         {

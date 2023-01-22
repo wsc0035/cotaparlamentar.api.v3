@@ -1,9 +1,9 @@
 ﻿using cotaparlamentar.api.Entitie;
 using cotaparlamentar.api.MysqlDataContext;
 using HtmlAgilityPack;
-using System.Globalization;
 using System.Text;
 using System.Web;
+using Magick.NET.WebImageExtensions;
 
 namespace cotaparlamentar.api.Service;
 
@@ -52,12 +52,12 @@ public class DeputadoService
 
         return LogReturn(listaBanco);
     }
-    public string BuscaTodosDeputadosSiteCompletoPorIdPerfil(int idperfil)
+    public string BuscaTodosDeputadosSiteCompletoPorIdPerfil(int nuDeputadoId)
     {
 
-        var deputadoBanco = _mysqlContext.Deputado.Where(d => d.IdPerfil == idperfil).First();
+        var deputadoBanco = _mysqlContext.Deputado.Where(d => d.NuDeputadoId == nuDeputadoId).First();
 
-        var deputadoSite = BuscaDeputadoSiteAtualPorIdPerfil(idperfil);
+        var deputadoSite = BuscaDeputadoSiteAtualPorIdPerfil(deputadoBanco.IdPerfil);
 
         deputadoBanco.Nome = deputadoSite.Nome;
         deputadoBanco.NomeCivil = deputadoSite.NomeCivil;
@@ -71,6 +71,31 @@ public class DeputadoService
 
         return $"ATUALIZADO {deputadoBanco.NuDeputadoId} - {deputadoBanco.Nome} ({deputadoBanco.Partido}-{deputadoBanco.Estado})";
     }
+
+    public async Task AtualizacaoDeFoto(int nuDeputadoId)
+    {
+        var deputadoBanco = _mysqlContext.Deputado.Where(d => d.NuDeputadoId == nuDeputadoId).First();
+
+        var base64img = await BuscarFotoDeputado(deputadoBanco.IdPerfil);
+
+        deputadoBanco.Foto = base64img;
+        _mysqlContext.Update(deputadoBanco);
+        _mysqlContext.SaveChanges();
+    }
+
+    public async Task AtualizacaoDeFoto()
+    {
+        var deputadoBanco = _mysqlContext.Deputado.Where(d => d.Foto == null).Take(10).ToList();
+
+        foreach (var deputado in deputadoBanco)
+        {
+            deputado.Foto = await BuscarFotoDeputado(deputado.IdPerfil);
+        }
+
+        _mysqlContext.UpdateRange(deputadoBanco);
+        _mysqlContext.SaveChanges();
+    }
+
     public List<Deputado> BuscarTodosDeputadoSiteAtual()
     {
         var url = "https://www.camara.leg.br/cota-parlamentar/index.jsp";
@@ -175,5 +200,25 @@ public class DeputadoService
         }
         builder.AppendLine("[ATUALIZACAO DEPUTADO]");
         return builder.ToString();
+    }
+
+    private async Task<string> BuscarFotoDeputado(int idperfil)
+    {  
+        var uri = $"https://www.camara.leg.br/internet/deputado/bandep/pagina_do_deputado/{idperfil}.jpg";
+
+        using (var httpClient = new HttpClient())
+        {
+            var response = await httpClient.GetByteArrayAsync(uri);
+
+            using (var image = new ImageMagick.MagickImage(response))
+            {
+                image.Crop(new ImageMagick.MagickGeometry(240, 0, 200, 200));
+                image.Scale(new ImageMagick.MagickGeometry(0, 0, 160, 160));
+                image.Write("output.jpg");
+            }
+        }
+
+        var bytes = File.ReadAllBytes("output.jpg");
+        return Convert.ToBase64String(bytes);
     }
 }

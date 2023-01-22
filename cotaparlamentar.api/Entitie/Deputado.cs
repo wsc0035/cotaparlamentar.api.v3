@@ -18,4 +18,5 @@ public class Deputado
     public DateTime DtAtualizacao { get; set; }
     public DateTime DtCadastro { get; set; }
     public DateTime? DtAtAssessor { get; set; }
+    public string? Foto { get; set; }
 }

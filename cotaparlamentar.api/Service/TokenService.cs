@@ -12,7 +12,7 @@ namespace cotaparlamentar.api.Service
         }
         public string GenerateToken()
         {            
-            const int tempo = 600;
+            const int tempo = 3600;
 
             var data = DateTime.Now;
             var data2 = DateTime.Now.AddSeconds(tempo);
